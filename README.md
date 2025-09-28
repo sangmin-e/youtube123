@@ -2,6 +2,11 @@
 
 Node.js 기반의 유튜브 영상 검색 및 재생 웹 애플리케이션입니다.
 
+[![GitHub](https://img.shields.io/badge/GitHub-sangmin--e%2Fyoutube123-blue)](https://github.com/sangmin-e/youtube123)
+[![Node.js](https://img.shields.io/badge/Node.js-v22.20.0-green)](https://nodejs.org/)
+[![Express](https://img.shields.io/badge/Express-4.x-lightgrey)](https://expressjs.com/)
+[![YouTube API](https://img.shields.io/badge/YouTube-Data%20API%20v3-red)](https://developers.google.com/youtube/v3)
+
 ## ✨ 주요 기능
 
 - 🔍 **영상 검색**: YouTube Data API v3를 통한 실시간 영상 검색
@@ -15,8 +20,8 @@ Node.js 기반의 유튜브 영상 검색 및 재생 웹 애플리케이션입�
 ### 1. 프로젝트 클론 및 의존성 설치
 
 ```bash
-git clone <repository-url>
-cd youtube
+git clone https://github.com/sangmin-e/youtube123.git
+cd youtube123
 npm install
 ```
 
@@ -68,7 +73,7 @@ API 키가 설정되지 않은 경우, Mock 서비스가 자동으로 활성화�
 ## 📁 프로젝트 구조
 
 ```
-youtube/
+youtube123/
 ├── server.js                 # Express 서버 메인 파일
 ├── package.json              # 프로젝트 설정 및 의존성
 ├── .env                      # 환경 변수 (생성 필요)
@@ -198,4 +203,5 @@ node test-api.js
 
 **개발자**: AI Assistant  
 **버전**: 1.0.0  
-**최종 업데이트**: 2025-09-28
+**최종 업데이트**: 2025-09-28  
+**GitHub**: [sangmin-e/youtube123](https://github.com/sangmin-e/youtube123)
