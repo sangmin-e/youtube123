@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/analysis/style.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- 헤더 -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">📊 YouTube 분석 도구</h1>
+            <p class="text-gray-600"><%= message %></p>
+        </header>
+
+        <!-- URL 입력 영역 -->
+        <div class="max-w-4xl mx-auto mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">🔗 YouTube URL 입력</h2>
+                <form id="analysisForm" class="space-y-4">
+                    <div>
+                        <label for="youtubeUrl" class="block text-sm font-medium text-gray-700 mb-2">
+                            YouTube 영상 URL
+                        </label>
+                        <input 
+                            type="url" 
+                            id="youtubeUrl" 
+                            placeholder="https://www.youtube.com/watch?v=..." 
+                            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            required
+                        >
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label for="collectionPeriod" class="block text-sm font-medium text-gray-700 mb-2">
+                                수집 기간 (일)
+                            </label>
+                            <select id="collectionPeriod" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="1">1일</option>
+                                <option value="7" selected>7일</option>
+                                <option value="30">30일</option>
+                                <option value="90">90일</option>
+                            </select>
+                        </div>
+                        
+                        <div>
+                            <label for="collectionInterval" class="block text-sm font-medium text-gray-700 mb-2">
+                                수집 주기 (시간)
+                            </label>
+                            <select id="collectionInterval" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <option value="1">1시간</option>
+                                <option value="6" selected>6시간</option>
+                                <option value="12">12시간</option>
+                                <option value="24">24시간</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button 
+                        type="submit" 
+                        class="w-full px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors font-medium"
+                    >
+                        📈 분석 시작
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 진행 상황 영역 -->
+        <div id="progressSection" class="max-w-4xl mx-auto mb-8 hidden">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">⏳ 진행 상황</h2>
+                <div id="progressContainer">
+                    <div class="mb-4">
+                        <div class="flex justify-between text-sm text-gray-600 mb-1">
+                            <span id="progressText">데이터 수집 중...</span>
+                            <span id="progressPercent">0%</span>
+                        </div>
+                        <div class="w-full bg-gray-200 rounded-full h-2">
+                            <div id="progressBar" class="bg-blue-500 h-2 rounded-full transition-all duration-300" style="width: 0%"></div>
+                        </div>
+                    </div>
+                    <div id="logContainer" class="bg-gray-50 rounded-lg p-4 max-h-40 overflow-y-auto">
+                        <div class="text-sm text-gray-600">로그가 여기에 표시됩니다...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 분석 결과 영역 -->
+        <div id="resultsSection" class="max-w-6xl mx-auto hidden">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">📊 분석 결과</h2>
+                
+                <!-- 기본 정보 -->
+                <div id="basicInfo" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <!-- 동적으로 생성됨 -->
+                </div>
+                
+                <!-- 차트 영역 -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-medium mb-4">조회수 변화</h3>
+                        <canvas id="viewsChart" width="400" height="200"></canvas>
+                    </div>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4">
+                        <h3 class="text-lg font-medium mb-4">참여도 분석</h3>
+                        <canvas id="engagementChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+                
+                <!-- 액션 버튼 -->
+                <div class="mt-6 flex justify-center space-x-4">
+                    <button id="exportPdf" class="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">
+                        📄 PDF 내보내기
+                    </button>
+                    <button id="exportExcel" class="px-6 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition-colors">
+                        📊 Excel 내보내기
+                    </button>
+                    <button id="shareResults" class="px-6 py-2 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                        🔗 결과 공유
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 로딩 스피너 -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-6 flex items-center gap-3">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+            <span>분석 중...</span>
+        </div>
+    </div>
+
+    <script src="/analysis/app.js"></script>
+</body>
+</html>

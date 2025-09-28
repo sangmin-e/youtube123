@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <!-- 헤더 -->
+        <header class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-800 mb-2">🎬 YouTube Player</h1>
+            <p class="text-gray-600"><%= message %></p>
+        </header>
+
+        <!-- 검색 영역 -->
+        <div class="max-w-2xl mx-auto mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <form id="searchForm" class="search-form flex gap-4">
+                    <input 
+                        type="text" 
+                        id="searchInput" 
+                        placeholder="검색할 영상을 입력하세요..." 
+                        class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required
+                    >
+                    <button 
+                        type="submit" 
+                        class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+                    >
+                        검색
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- 재생 영역 -->
+        <div class="max-w-4xl mx-auto mb-8">
+            <div class="bg-white rounded-lg shadow-md p-6 player-container">
+                <h2 class="text-xl font-semibold mb-4">📺 영상 재생</h2>
+                <div id="playerContainer" class="aspect-video bg-gray-200 rounded-lg flex items-center justify-center">
+                    <p class="text-gray-500">영상을 검색하고 선택하면 여기에 재생됩니다</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 검색 결과 영역 -->
+        <div class="max-w-6xl mx-auto">
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">🔍 검색 결과</h2>
+                <div id="searchResults" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <p class="text-gray-500 col-span-full text-center py-8">
+                        검색어를 입력하고 검색 버튼을 눌러보세요
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 로딩 스피너 -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg p-6 flex items-center gap-3">
+            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-500"></div>
+            <span>검색 중...</span>
+        </div>
+    </div>
+
+    <script src="/app.js"></script>
+</body>
+</html>
